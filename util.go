@@ -7,8 +7,8 @@ import (
 	"howett.net/plist"
 )
 
-func fileNameWithoutExtension(fileName string) string {
-	return fileName[:len(fileName)-len(filepath.Ext(fileName))]
+func fileNameWithoutExtension(name string) string {
+	return name[:len(name) - len(filepath.Ext(name))]
 }
 
 func exit() {
