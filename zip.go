@@ -1,5 +1,0 @@
-package main
-
-func extract() {
-
-}

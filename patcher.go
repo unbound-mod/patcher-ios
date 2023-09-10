@@ -1,31 +1,21 @@
 package main
 
-import (
-	"fmt"
-	"github.com/urfave/cli/v2"
-	"log"
-	"os"
-)
+func setSupportedDevices() {
+	logger.Info("Setting supported devices...")
+	delete(info, "UISupportedDevices")
+	logger.Info("Supported devices set.")
+}
 
-func main() {
-	app := &cli.App{
-		Name:  "patcher-ios",
-		Usage: "Patches the Discord IPA with icons, utilities and features to ease usability.",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:    "ipa",
-				Aliases: []string{"i"},
-				Usage:   "The `path` of the IPA file you would like to patch.",
-			},
-		},
-		Action: func(context *cli.Context) error {
-			fmt.Printf("Hello %q", context.Args().Get(0))
+func setAppName() {
+	logger.Info("Setting app name...")
+	info["CFBundleName"] = "Unbound"
+	info["CFBundleDisplayName"] = "Unbound"
+	logger.Info("App name set.")
+}
 
-			return nil
-		},
-	}
-
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
-	}
+func setFileAccess() {
+	logger.Info("Setting file access...")
+	info["UISupportsDocumentBrowser"] = true
+	info["UIFileSharingEnabled"] = true
+	logger.Info("File access enabled.")
 }
