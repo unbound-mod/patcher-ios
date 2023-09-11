@@ -13,12 +13,17 @@ func extract() {
 	format := archiver.Zip{}
 	directory = fileNameWithoutExtension(filepath.Base(ipa))
 
+	if _, err := os.Stat(ipa); err != nil {
+		logger.Errorf("Couldn't find \"%s\". Does it exist?", ipa)
+		exit()
+	}
+
 	if _, err := os.Stat(directory); err == nil {
 		logger.Info("Detected previously extracted directory, cleaning it up...")
 
 		err := os.RemoveAll(directory)
 		if err != nil {
-			logger.Fatalf("Failed to clean up previously extracted directory: %s", err)
+			logger.Errorf("Failed to clean up previously extracted directory: %s", err)
 			exit()
 		}
 
@@ -27,7 +32,7 @@ func extract() {
 
 	err := format.Unarchive(ipa, directory)
 	if err != nil {
-		logger.Fatalf("Failed to extract %s: **%v**", ipa, err)
+		logger.Errorf("Failed to extract %s: **%v**", ipa, err)
 		os.Exit(1)
 	}
 
@@ -45,7 +50,7 @@ func archive() {
 
 		err := os.Remove(zip)
 		if err != nil {
-			logger.Fatalf("Failed to clean up previous archive: %s", err)
+			logger.Errorf("Failed to clean up previous archive: %s", err)
 			exit()
 		}
 
@@ -55,7 +60,7 @@ func archive() {
 	logger.Infof("Archiving \"%s\" to \"%s\"", directory, zip)
 	err := format.Archive([]string{filepath.Join(directory, "Payload")}, zip)
 	if err != nil {
-		logger.Fatalf("Failed to archive \"%s\": %v", zip, err)
+		logger.Errorf("Failed to archive \"%s\": %v", zip, err)
 		exit()
 	}
 
@@ -64,7 +69,7 @@ func archive() {
 
 		err := os.Remove("Unbound.ipa")
 		if err != nil {
-			logger.Fatalf("Failed to clean up previous Unbound IPA: %s", err)
+			logger.Errorf("Failed to clean up previous Unbound IPA: %s", err)
 			exit()
 		}
 
@@ -73,7 +78,7 @@ func archive() {
 
 	err = os.Rename(zip, "Unbound.ipa")
 	if err != nil {
-		logger.Fatalf("Failed to rename \"%s\": %v", zip, err)
+		logger.Errorf("Failed to rename \"%s\": %v", zip, err)
 		exit()
 	}
 

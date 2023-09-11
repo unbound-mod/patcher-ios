@@ -19,6 +19,7 @@ var logger = log.NewWithOptions(os.Stderr, log.Options{
 var (
 	info map[string]interface{}
 	directory string
+	assets string
 	ipa string
 )
 
@@ -42,6 +43,7 @@ func main() {
 			setSupportedDevices()
 			setFileAccess()
 			setAppName()
+			setIcons()
 
 			saveInfo()
 			archive()
@@ -50,6 +52,8 @@ func main() {
 			return nil;
 		},
 	}
+
+	assets = os.TempDir()
 
 	if err := app.Run(os.Args); err != nil {
 		logger.Fatal(err)
