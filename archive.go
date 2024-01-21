@@ -9,7 +9,7 @@ import (
 )
 
 func extract() {
-	logger.Infof("Attempting to extract \"%s\"", ipa)
+	logger.Debugf("Attempting to extract \"%s\"", ipa)
 	format := archiver.Zip{}
 	directory = fileNameWithoutExtension(filepath.Base(ipa))
 
@@ -19,7 +19,7 @@ func extract() {
 	}
 
 	if _, err := os.Stat(directory); err == nil {
-		logger.Info("Detected previously extracted directory, cleaning it up...")
+		logger.Debug("Detected previously extracted directory, cleaning it up...")
 
 		err := os.RemoveAll(directory)
 		if err != nil {
@@ -40,13 +40,13 @@ func extract() {
 }
 
 func archive() {
-	logger.Infof("Attempting to archive \"%s\"", directory)
+	logger.Debugf("Attempting to archive \"%s\"", directory)
 
-	format := archiver.Zip{ CompressionLevel: flate.BestCompression }
+	format := archiver.Zip{CompressionLevel: flate.BestCompression}
 	zip := directory + ".zip"
 
 	if _, err := os.Stat(zip); err == nil {
-		logger.Info("Detected previous archive, cleaning it up...")
+		logger.Debug("Detected previous archive, cleaning it up...")
 
 		err := os.Remove(zip)
 		if err != nil {
@@ -65,7 +65,7 @@ func archive() {
 	}
 
 	if _, err := os.Stat("Unbound.ipa"); err == nil {
-		logger.Info("Detected previous Unbound IPA, cleaning it up...")
+		logger.Debug("Detected previous Unbound IPA, cleaning it up...")
 
 		err := os.Remove("Unbound.ipa")
 		if err != nil {

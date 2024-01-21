@@ -9,18 +9,18 @@ import (
 )
 
 var logger = log.NewWithOptions(os.Stderr, log.Options{
-	ReportCaller: false,
+	ReportCaller:    false,
 	ReportTimestamp: true,
-	TimeFormat: time.TimeOnly,
-	Level: log.DebugLevel,
-	Prefix: "Patcher",
+	TimeFormat:      time.TimeOnly,
+	Level:           log.DebugLevel,
+	Prefix:          "Patcher",
 })
 
 var (
-	info map[string]interface{}
+	info      map[string]interface{}
 	directory string
-	assets string
-	ipa string
+	assets    string
+	ipa       string
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 			ipa = context.Args().Get(0)
 
 			if ipa == "" {
-				logger.Fatal("Please provide a path to the IPA.")
+				logger.Error("Please provide a path to the IPA.")
 				os.Exit(1)
 			}
 
@@ -40,6 +40,7 @@ func main() {
 			extract()
 			loadInfo()
 
+			setReactNavigationName()
 			setSupportedDevices()
 			setFileAccess()
 			setAppName()
@@ -49,7 +50,7 @@ func main() {
 			archive()
 
 			exit()
-			return nil;
+			return nil
 		},
 	}
 

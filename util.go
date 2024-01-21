@@ -10,11 +10,11 @@ import (
 )
 
 func fileNameWithoutExtension(name string) string {
-	return name[:len(name) - len(filepath.Ext(name))]
+	return name[:len(name)-len(filepath.Ext(name))]
 }
 
 func exit() {
-	logger.Info("Cleaning up...")
+	logger.Debug("Cleaning up...")
 
 	if _, e := os.Stat(directory); e == nil {
 		if e := os.RemoveAll(directory); e != nil {
@@ -35,7 +35,31 @@ func exit() {
 	os.Exit(0)
 }
 
-func loadInfo() () {
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+
+	if err == nil {
+		return true, nil
+	}
+
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	return false, err
+}
+
+func filter[T any](ss []T, test func(T) bool) (ret []T) {
+	for _, s := range ss {
+		if test(s) {
+			ret = append(ret, s)
+		}
+	}
+
+	return
+}
+
+func loadInfo() {
 	if info != nil {
 		return
 	}
@@ -44,13 +68,13 @@ func loadInfo() () {
 	file, err := os.Open(path)
 
 	if err != nil {
-		logger.Fatal("Couldn't find Info.plist. Is the provided zip an IPA file?")
+		logger.Error("Couldn't find Info.plist. Is the provided zip an IPA file?")
 		exit()
 	}
 
 	decoder := plist.NewDecoder(file)
 	if err := decoder.Decode(&info); err != nil {
-		logger.Fatal("Couldn't find Info.plist. Is the provided zip an IPA file?")
+		logger.Error("Couldn't find Info.plist. Is the provided zip an IPA file?")
 		exit()
 	}
 }
@@ -64,7 +88,7 @@ func saveInfo() {
 		exit()
 	}
 
-	logger.Infof("Saving Info.plist data...")
+	logger.Debug("Saving Info.plist data...")
 	encoder := plist.NewEncoder(file)
 	err = encoder.Encode(info)
 
@@ -95,13 +119,13 @@ func download(url string, path string) {
 	defer out.Close()
 
 	if res.StatusCode != http.StatusOK {
-    logger.Errorf("Received bad status while downloading %s: %s", url, res.Status)
+		logger.Errorf("Received bad status while downloading %s: %s", url, res.Status)
 		exit()
-  }
+	}
 
-	_, err = io.Copy(out, res.Body);
+	_, err = io.Copy(out, res.Body)
 
-  if err == nil {
+	if err == nil {
 		logger.Infof("Successfully downloaded \"%s\" to \"%s\".", url, path)
 	} else {
 		logger.Errorf("Failed to write \"%s\" to \"%s\": %v.", url, path, err)
