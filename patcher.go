@@ -119,7 +119,7 @@ func setReactNavigationName() {
 				continue
 			}
 
-			split[idx] = "@react-navigation+elements@fixed"
+			split[idx] = "@react-navigation+elements@patched"
 		}
 
 		delete(manifest.Hashes, key)
@@ -158,7 +158,7 @@ func setReactNavigationName() {
 
 	for _, directory := range directories {
 		currentName := filepath.Join(modulesPath, directory.Name())
-		newName := filepath.Join(modulesPath, "@react-navigation+elements@fixed")
+		newName := filepath.Join(modulesPath, "@react-navigation+elements@patched")
 
 		if err := os.Rename(currentName, newName); err != nil {
 			logger.Errorf("Failed to rename React Navigation directory: %v %v", directory.Name(), err)
