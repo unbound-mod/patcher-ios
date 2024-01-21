@@ -131,7 +131,7 @@ func setReactNavigationName() {
 	content, err = json.Marshal(manifest)
 
 	if err != nil {
-		logger.Errorf("Failed to write modified manifest.json file. %v", err)
+		logger.Errorf("Failed to marshal modified manifest structure. %v", err)
 		return
 	}
 
